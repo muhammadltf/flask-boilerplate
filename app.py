@@ -79,7 +79,7 @@ def ask():
 
     response = requests.post(url, data=data.encode("utf-8"), headers= header)
     response_text = json.loads(response.text)["answers"][0]["answer"]
-    payload = json.dumps("{'answer': '"+response_text+"'}", ensure_ascii=False)
+    payload = json.dumps({'answer': response_text}, ensure_ascii=False)
     return payload
 
 
