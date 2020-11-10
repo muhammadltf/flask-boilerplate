@@ -2,12 +2,13 @@
 # Imports
 #----------------------------------------------------------------------------#
 
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, jsonify
 # from flask.ext.sqlalchemy import SQLAlchemy
 import logging
 from logging import Formatter, FileHandler
 from forms import *
 import os
+import requests, json
 
 #----------------------------------------------------------------------------#
 # App Config.
@@ -68,6 +69,20 @@ def forgot():
     form = ForgotForm(request.form)
     return render_template('forms/forgot.html', form=form)
 
+@app.route("/ask")
+def ask():
+    query = request.args.get('query')
+
+    url = 'https://chatbot-kokoro.azurewebsites.net/qnamaker/knowledgebases/f2a8edcd-2631-497b-98e4-918663e299d0/generateAnswer'
+    data = "{'question': '"+query+"'}"
+    header = {'content-type': 'application/json', 'authorization': 'EndpointKey 30168be7-2ad2-4346-af8c-83fcc05069eb'}
+
+    response = requests.post(url, data=data.encode("utf-8"), headers= header)
+    response_text = json.loads(response.text)["answers"][0]["answer"]
+    payload = json.dumps("{'answer': '"+response_text+"'}", ensure_ascii=False)
+    return payload
+
+
 # Error handlers.
 
 
@@ -86,10 +101,10 @@ if not app.debug:
     file_handler.setFormatter(
         Formatter('%(asctime)s %(levelname)s: %(message)s [in %(pathname)s:%(lineno)d]')
     )
-    app.logger.setLevel(logging.INFO)
+    # app.logger.setLevel(logging.INFO)
     file_handler.setLevel(logging.INFO)
-    app.logger.addHandler(file_handler)
-    app.logger.info('errors')
+    # app.logger.addHandler(file_handler)
+    # app.logger.info('errors')
 
 #----------------------------------------------------------------------------#
 # Launch.
