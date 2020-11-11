@@ -82,7 +82,7 @@ def ask():
     query = request.form.get('query')
 
     if query == "START":
-        response_text = "初めまして！チャットボットと申します。問い合わせはどうぞ！"
+        response_text = "初めまして！ロココと申します。問い合わせはどうぞ！"
     else:
         url = 'https://chatbot-kokoro.azurewebsites.net/qnamaker/knowledgebases/f2a8edcd-2631-497b-98e4-918663e299d0/generateAnswer'
         data = "{'question': '"+query+"'}"
