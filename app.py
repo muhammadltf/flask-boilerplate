@@ -71,15 +71,31 @@ def forgot():
 
 @app.route("/ask")
 def ask():
+    #Step by step:
+    #0. Change chit chat into professional
+    #1. Greetings
+    #2. Response Inquiry
+    #2.a Unkown queries: (Mou ikkai onegaishimasu)
+    #2.b Call Luis to generate metadata, use to hit QnA Maker
+    #3. Detect mou ii no youna hanashi ga attara, shitsureishimasu itte
+
     query = request.args.get('query')
 
-    url = 'https://chatbot-kokoro.azurewebsites.net/qnamaker/knowledgebases/f2a8edcd-2631-497b-98e4-918663e299d0/generateAnswer'
-    data = "{'question': '"+query+"'}"
-    header = {'content-type': 'application/json', 'authorization': 'EndpointKey 30168be7-2ad2-4346-af8c-83fcc05069eb'}
+    if query == "START":
+        response_text = "初めまして！チャットボットと申します。問い合わせはどうぞ！"
+    else:
+        url = 'https://chatbot-kokoro.azurewebsites.net/qnamaker/knowledgebases/f2a8edcd-2631-497b-98e4-918663e299d0/generateAnswer'
+        data = "{'question': '"+query+"'}"
+        header = {'content-type': 'application/json', 'authorization': 'EndpointKey 30168be7-2ad2-4346-af8c-83fcc05069eb'}
 
-    response = requests.post(url, data=data.encode("utf-8"), headers= header)
-    response_text = json.loads(response.text)["answers"][0]["answer"]
+        response = requests.post(url, data=data.encode("utf-8"), headers= header)
+        response_text = json.loads(response.text)["answers"][0]["answer"]
+        if "KB" in response_text:
+            response_text = "恐れ入りますが、もう一回お願いします。"
+    
+
     payload = json.dumps({'answer': response_text}, ensure_ascii=False)
+    print(response_text)
     return payload
 
 
