@@ -9,3 +9,8 @@ six==1.15.0
 toml==0.10.2
 wrapt==1.12.1
 flask
+Fabric
+Flask-SQLAlchemy
+Flask-WTF
+WTForms
+coverage
