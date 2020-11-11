@@ -69,7 +69,7 @@ def forgot():
     form = ForgotForm(request.form)
     return render_template('forms/forgot.html', form=form)
 
-@app.route("/ask")
+@app.route("/ask", methods=["POST"])
 def ask():
     #Step by step:
     #0. Change chit chat into professional
@@ -79,7 +79,7 @@ def ask():
     #2.b Call Luis to generate metadata, use to hit QnA Maker
     #3. Detect mou ii no youna hanashi ga attara, shitsureishimasu itte
 
-    query = request.args.get('query')
+    query = request.form.get('query')
 
     if query == "START":
         response_text = "初めまして！チャットボットと申します。問い合わせはどうぞ！"
@@ -94,7 +94,12 @@ def ask():
             response_text = "恐れ入りますが、もう一回お願いします。"
     
 
-    payload = json.dumps({'answer': response_text}, ensure_ascii=False)
+    payload = json.dumps({
+        'answer': response_text,
+        'Access-Control-Allow-Origin':  'http://127.0.0.1:5000',
+        'Access-Control-Allow-Methods': 'POST',
+        'Access-Control-Allow-Headers': 'Content-Type, Authorization'
+    }, ensure_ascii=False)
     print(response_text)
     return payload
 
