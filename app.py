@@ -2,7 +2,7 @@
 # Imports
 #----------------------------------------------------------------------------#
 
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, Response
 # from flask.ext.sqlalchemy import SQLAlchemy
 import logging
 from logging import Formatter, FileHandler
@@ -10,6 +10,7 @@ from forms import *
 import os
 import requests, json
 from werkzeug.exceptions import BadRequest
+from flask_cors import CORS
 
 
 #----------------------------------------------------------------------------#
@@ -17,6 +18,9 @@ from werkzeug.exceptions import BadRequest
 #----------------------------------------------------------------------------#
 
 app = Flask(__name__)
+if os.getenv('chatbot-env') == 'dev':
+    CORS(app)
+
 app.config.from_object('config')
 #db = SQLAlchemy(app)
 
@@ -102,10 +106,7 @@ def ask():
     
 
     payload = json.dumps({
-        'answer': response_text,
-        'Access-Control-Allow-Origin':  'http://127.0.0.1:5000',
-        'Access-Control-Allow-Methods': 'POST',
-        'Access-Control-Allow-Headers': 'Content-Type, Authorization'
+        'answer': response_text
     }, ensure_ascii=False)
     print(response_text)
     return payload
