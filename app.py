@@ -9,6 +9,8 @@ from logging import Formatter, FileHandler
 from forms import *
 import os
 import requests, json
+from werkzeug.exceptions import BadRequest
+
 
 #----------------------------------------------------------------------------#
 # App Config.
@@ -79,7 +81,12 @@ def ask():
     #2.b Call Luis to generate metadata, use to hit QnA Maker
     #3. Detect mou ii no youna hanashi ga attara, shitsureishimasu itte
 
-    query = request.form.get('query')
+    #check whether user sends form or json data
+    try:
+        req_data = request.get_json()
+        query = req_data['query']
+    except (TypeError, BadRequest, KeyError):
+        query = request.form['query']
 
     if query == "START":
         response_text = "初めまして！ロココと申します。問い合わせはどうぞ！"
