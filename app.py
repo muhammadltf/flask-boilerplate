@@ -101,6 +101,10 @@ def ask():
 
     if query == "START":
         response_text = "初めまして！ロココと申します。問い合わせはどうぞ！"
+        state = "GREET"
+    elif query == "END":
+        response_text = "それでは、失礼いたします。"
+        state = "FINISH"
     else:
         url = 'https://chatbot-kokoro.azurewebsites.net/qnamaker/knowledgebases/f2a8edcd-2631-497b-98e4-918663e299d0/generateAnswer'
         
@@ -116,10 +120,11 @@ def ask():
         response_text = json.loads(response.text)["answers"][0]["answer"]
         if "KB" in response_text:
             response_text = "恐れ入りますが、もう一回お願いします。"
-    
+        state = "REPLY"
 
     payload = json.dumps({
-        'answer': response_text
+        'answer': response_text,
+        'state': state
     }, ensure_ascii=False)
     print(response_text)
     return payload
