@@ -86,18 +86,30 @@ def ask():
     #3. Detect mou ii no youna hanashi ga attara, shitsureishimasu itte
     #4. if multiple answer/intent is detected, cut the first one (usually is not the main intent)
 
+    #TODO:
+    #Add additional prompt for naisen: if misheard the name, please say it again.
+    #Add END action
+
     #check whether user sends form or json data
     try:
         req_data = request.get_json()
         query = req_data['query']
+        command = req_data['command']
     except (TypeError, BadRequest, KeyError):
         query = request.form['query']
+        command = request.form['command']
 
     if query == "START":
         response_text = "初めまして！ロココと申します。問い合わせはどうぞ！"
     else:
         url = 'https://chatbot-kokoro.azurewebsites.net/qnamaker/knowledgebases/f2a8edcd-2631-497b-98e4-918663e299d0/generateAnswer'
-        data = "{'question': '"+query+"'}"
+        
+        data = "{}"
+        if command != "":
+           data = "{'question': '"+query+"','strictFilters': [{'name':'category','value':'"+command+"'}]}" 
+        else:
+            data = "{'question': '"+query+"','strictFilters': [{'name':'category','value':'general_info'}]}"
+
         header = {'content-type': 'application/json', 'authorization': 'EndpointKey 30168be7-2ad2-4346-af8c-83fcc05069eb'}
 
         response = requests.post(url, data=data.encode("utf-8"), headers= header)
