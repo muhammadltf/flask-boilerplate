@@ -84,6 +84,7 @@ def ask():
     #2.a Unkown queries: (Mou ikkai onegaishimasu)
     #2.b Call Luis to generate metadata, use to hit QnA Maker
     #3. Detect mou ii no youna hanashi ga attara, shitsureishimasu itte
+    #4. if multiple answer/intent is detected, cut the first one (usually is not the main intent)
 
     #check whether user sends form or json data
     try:
