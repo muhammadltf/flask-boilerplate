@@ -78,17 +78,8 @@ def forgot():
 @app.route("/ask", methods=["POST"])
 def ask():
     #Step by step:
-    #0. Change chit chat into professional
-    #1. Greetings
-    #2. Response Inquiry
-    #2.a Unkown queries: (Mou ikkai onegaishimasu)
-    #2.b Call Luis to generate metadata, use to hit QnA Maker
-    #3. Detect mou ii no youna hanashi ga attara, shitsureishimasu itte
+    #3. Detect owari no youna hanashi ga attara, end shite
     #4. if multiple answer/intent is detected, cut the first one (usually is not the main intent)
-
-    #TODO:
-    #Add additional prompt for naisen: if misheard the name, please say it again.
-    #Add END action
 
     #check whether user sends form or json data
     try:
@@ -101,6 +92,10 @@ def ask():
 
     if query == "START":
         response_text = "初めまして！ロココと申します。問い合わせはどうぞ！"
+
+        if command == "naisen":
+            response_text = "初めまして！ロココと申します。社員の名前と部署お願いします！"
+
         state = "GREET"
     elif query == "END":
         response_text = "それでは、失礼いたします。"
@@ -118,6 +113,10 @@ def ask():
 
         response = requests.post(url, data=data.encode("utf-8"), headers= header)
         response_text = json.loads(response.text)["answers"][0]["answer"]
+        
+        if command == "naisen":
+            response_text += " 間違ったら、もう一度話していただけませんか。"
+        
         if "KB" in response_text:
             response_text = "恐れ入りますが、もう一回お願いします。"
         state = "REPLY"
