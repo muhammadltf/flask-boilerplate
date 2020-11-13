@@ -105,10 +105,10 @@ def ask():
         url = 'https://chatbot-kokoro.azurewebsites.net/qnamaker/knowledgebases/f2a8edcd-2631-497b-98e4-918663e299d0/generateAnswer'
         
         data = "{}"
-        if command != "":
-           data = "{'question': '"+query+"','strictFilters': [{'name':'category','value':'"+command+"'}]}" 
+        if command == "default":
+            data = "{'question': '"+query+"','strictFilters': [{'name':'category','value':'general_info'},{'name':'editorial','value':'chitchat'}], 'strictFiltersCompoundOperationType': 'OR'}"
         else:
-            data = "{'question': '"+query+"','strictFilters': [{'name':'category','value':'general_info'}]}"
+            data = "{'question': '"+query+"','strictFilters': [{'name':'category','value':'"+command+"'}]}" 
 
         header = {'content-type': 'application/json', 'authorization': 'EndpointKey 30168be7-2ad2-4346-af8c-83fcc05069eb'}
 
