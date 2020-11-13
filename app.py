@@ -18,8 +18,8 @@ from flask_cors import CORS
 #----------------------------------------------------------------------------#
 
 app = Flask(__name__)
-if os.getenv('chatbot-env') == 'dev':
-    CORS(app)
+allowed_sites = os.getenv('allowed-sites')
+CORS(app, origins=[allowed_sites])
 
 app.config.from_object('config')
 #db = SQLAlchemy(app)
