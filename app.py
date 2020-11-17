@@ -77,9 +77,6 @@ def forgot():
 
 @app.route("/ask", methods=["POST"])
 def ask():
-    #Step by step:
-    #3. Detect owari no youna hanashi ga attara, end shite
-    #4. if multiple answer/intent is detected, cut the first one (usually is not the main intent)
 
     #check whether user sends form or json data
     try:
@@ -90,11 +87,19 @@ def ask():
         query = request.form['query']
         command = request.form['command']
 
+    for end_utterance in ["以上", "終わり"]:
+        if end_utterance in query:
+            query = "END"
+            break
+
+    #HOW TO READ
+    read = ""
+
     if query == "START":
-        response_text = "初めまして！ロココと申します。問い合わせはどうぞ！"
+        response_text = "初めまして！ロココと申します。問い合わせをどうぞ！"
 
         if command == "naisen":
-            response_text = "初めまして！ロココと申します。社員の名前と部署お願いします！"
+            response_text = "初めまして！内線検索サービスです。社員の名前と部署お願いします！"
 
         state = "GREET"
     elif query == "END":
@@ -110,12 +115,13 @@ def ask():
             data = "{'question': '"+query+"','strictFilters': [{'name':'category','value':'"+command+"'}]}" 
 
         header = {'content-type': 'application/json', 'authorization': 'EndpointKey 30168be7-2ad2-4346-af8c-83fcc05069eb'}
-
-        response = requests.post(url, data=data.encode("utf-8"), headers= header)
+        response = requests.post(url, data=data.encode("utf-8"), headers= header)       
         response_text = json.loads(response.text)["answers"][0]["answer"]
         
-        if command == "naisen":
-            response_text += " 間違ったら、もう一度話していただけませんか。"
+        if "￥" in response_text:
+            resp_raw = response_text.split("￥")
+            response_text = resp_raw[0] + " 間違ったら、もう一度話していただけませんか。"
+            read = resp_raw[1] + " 間違ったら、もう一度話していただけませんか。"
         
         if "KB" in response_text:
             response_text = "恐れ入りますが、もう一回お願いします。"
@@ -123,6 +129,7 @@ def ask():
 
     payload = json.dumps({
         'answer': response_text,
+        'read': read,
         'state': state
     }, ensure_ascii=False)
     print(response_text)
