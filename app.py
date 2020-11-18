@@ -94,7 +94,7 @@ def ask():
 
     for thanks_utterance in ["ありがとう", "どうも"]:
         if thanks_utterance in query:
-            query = "START"
+            query = "THANKS"
             break
     
     #HOW TO READ
