@@ -103,7 +103,7 @@ def ask():
 
         state = "GREET"
     elif query == "END":
-        response_text = "それでは、失礼いたします。"
+        response_text = "お問い合わせがないようなので、失礼させて頂きます。ありがとうございました。"
         state = "FINISH"
     else:
         url = 'https://chatbot-kokoro.azurewebsites.net/qnamaker/knowledgebases/f2a8edcd-2631-497b-98e4-918663e299d0/generateAnswer'
