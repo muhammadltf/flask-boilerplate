@@ -120,8 +120,8 @@ def ask():
         
         if "￥" in response_text:
             resp_raw = response_text.split("￥")
-            response_text = resp_raw[0] + " 間違ったら、もう一度話していただけませんか。"
-            read = resp_raw[1] + " 間違ったら、もう一度話していただけませんか。"
+            response_text = resp_raw[0]
+            read = resp_raw[1]
         
         if "KB" in response_text:
             response_text = "恐れ入りますが、もう一回お願いします。"
