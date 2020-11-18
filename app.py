@@ -92,19 +92,29 @@ def ask():
             query = "END"
             break
 
+    for thanks_utterance in ["ありがとう"、"どうも"]:
+        if thanks_utterance in query:
+            query = "START"
+            break
+    
     #HOW TO READ
     read = ""
+    #ADD ON
+    suffix = ""
 
     if query == "START":
         response_text = "初めまして！ロココと申します。お問い合わせをどうぞ！"
 
         if command == "naisen":
-            response_text = "初めまして！内線検索サービスです。社員の名前と部署お願いします！"
+            response_text = "初めまして！内線検索サービスです。社員の名前と部署をお願いします！"
 
         state = "GREET"
     elif query == "END":
         response_text = "お問い合わせがないようなので、失礼させて頂きます。ありがとうございました。"
         state = "FINISH"
+    elif query == "THANKS":
+        response_text = "どういたしまして。お役怪ならうれしいです。"
+        state = "REPLY"
     else:
         url = 'https://chatbot-kokoro.azurewebsites.net/qnamaker/knowledgebases/f2a8edcd-2631-497b-98e4-918663e299d0/generateAnswer'
         
@@ -113,18 +123,23 @@ def ask():
             data = "{'question': '"+query+"','strictFilters': [{'name':'category','value':'general_info'},{'name':'editorial','value':'chitchat'}], 'strictFiltersCompoundOperationType': 'OR'}"
         else:
             data = "{'question': '"+query+"','strictFilters': [{'name':'category','value':'"+command+"'}]}" 
+            suffix = "スケジュールを確認しますか？"
 
         header = {'content-type': 'application/json', 'authorization': 'EndpointKey 30168be7-2ad2-4346-af8c-83fcc05069eb'}
         response = requests.post(url, data=data.encode("utf-8"), headers= header)       
-        response_text = json.loads(response.text)["answers"][0]["answer"]
+        response_text = json.loads(response.text)["answers"][0]["answer"] ＋ suffix
         
         if "￥" in response_text:
             resp_raw = response_text.split("￥")
             response_text = resp_raw[0]
             read = resp_raw[1]
-        
+
         if "KB" in response_text:
-            response_text = "恐れ入りますが、もう一回お願いします。"
+            if command == "default":
+                response_text = "申し訳ありません。私の勉強が足りないようです。私にはわかりません。"
+            elif command == "naisen":
+                response_text = "申し訳ありません。まだ登録されていないようです。"
+
         state = "REPLY"
 
     payload = json.dumps({
