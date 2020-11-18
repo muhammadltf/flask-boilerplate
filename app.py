@@ -96,7 +96,7 @@ def ask():
     read = ""
 
     if query == "START":
-        response_text = "初めまして！ロココと申します。問い合わせをどうぞ！"
+        response_text = "初めまして！ロココと申します。お問い合わせをどうぞ！"
 
         if command == "naisen":
             response_text = "初めまして！内線検索サービスです。社員の名前と部署お願いします！"
