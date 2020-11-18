@@ -92,7 +92,7 @@ def ask():
             query = "END"
             break
 
-    for thanks_utterance in ["ありがとう"、"どうも"]:
+    for thanks_utterance in ["ありがとう", "どうも"]:
         if thanks_utterance in query:
             query = "START"
             break
@@ -127,7 +127,7 @@ def ask():
 
         header = {'content-type': 'application/json', 'authorization': 'EndpointKey 30168be7-2ad2-4346-af8c-83fcc05069eb'}
         response = requests.post(url, data=data.encode("utf-8"), headers= header)       
-        response_text = json.loads(response.text)["answers"][0]["answer"] ＋ suffix
+        response_text = json.loads(response.text)["answers"][0]["answer"] + suffix
         
         if "￥" in response_text:
             resp_raw = response_text.split("￥")
