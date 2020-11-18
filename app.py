@@ -127,12 +127,12 @@ def ask():
 
         header = {'content-type': 'application/json', 'authorization': 'EndpointKey 30168be7-2ad2-4346-af8c-83fcc05069eb'}
         response = requests.post(url, data=data.encode("utf-8"), headers= header)       
-        response_text = json.loads(response.text)["answers"][0]["answer"] + suffix
+        response_text = json.loads(response.text)["answers"][0]["answer"]
         
         if "￥" in response_text:
             resp_raw = response_text.split("￥")
-            response_text = resp_raw[0]
-            read = resp_raw[1]
+            response_text = resp_raw[0] + suffix
+            read = resp_raw[1] + suffix
 
         if "KB" in response_text:
             if command == "default":
