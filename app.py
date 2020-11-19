@@ -156,6 +156,8 @@ def ask():
     read = ""
     #ADD ON
     suffix = ""
+    #RESPONSE STATE
+    state = "REPLY" 
 
     if query == "START":
         response_text = "初めまして！ロココと申します。お問い合わせは何でしょう？"
@@ -187,20 +189,17 @@ def ask():
         response = requests.post(url, data=data.encode("utf-8"), headers= header)   
         response_text = json.loads(response.text)["answers"][0]["answer"]
         score = float(json.loads(response.text)["answers"][0]["score"])
-        print(score)
-
-        if "￥" in response_text:
-            resp_raw = response_text.split("￥")
-            response_text = resp_raw[0] + suffix
-            read = resp_raw[1] + suffix
-
-        if "KB" in response_text:
+        
+        if score < 60 or "KB" in response_text:
             if command == "default":
                 response_text = "申し訳ありません。私の勉強が足りないようです。私にはわかりません。"
             elif command == "naisen":
                 response_text = "申し訳ありません。まだ登録されていないようです。"
 
-        state = "REPLY"
+        if "￥" in response_text:
+            resp_raw = response_text.split("￥")
+            response_text = resp_raw[0] + suffix
+            read = resp_raw[1] + suffix
 
     payload = json.dumps({
         'answer': response_text,
