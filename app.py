@@ -103,17 +103,17 @@ def ask():
     suffix = ""
 
     if query == "START":
-        response_text = "初めまして！ロココと申します。お問い合わせをどうぞ！"
+        response_text = "初めまして！ロココと申します。お問い合わせは何でしょう？"
 
         if command == "naisen":
-            response_text = "初めまして！内線検索サービスです。社員の名前と部署をお願いします！"
+            response_text = "初めまして！内線検索サービスです。検索したい社員の名前と部署をどうぞ！"
 
         state = "GREET"
     elif query == "END":
         response_text = "お問い合わせがないようなので、失礼させて頂きます。ありがとうございました。"
         state = "FINISH"
     elif query == "THANKS":
-        response_text = "どういたしまして。お役怪ならうれしいです。"
+        response_text = "どういたしまして。お役に立てたならうれしいです。"
         state = "REPLY"
     else:
         url = 'https://chatbot-kokoro.azurewebsites.net/qnamaker/knowledgebases/f2a8edcd-2631-497b-98e4-918663e299d0/generateAnswer'
