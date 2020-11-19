@@ -96,6 +96,11 @@ def ask():
         if thanks_utterance in query:
             query = "THANKS"
             break
+
+    for return_utterance in ["ないです", "ないんです",　"ありません", "大丈夫"]:
+        if return_utterance in query:
+            query = "RETURN"
+            break
     
     #HOW TO READ
     read = ""
@@ -115,6 +120,9 @@ def ask():
     elif query == "THANKS":
         response_text = "どういたしまして。お役に立てたならうれしいです。"
         state = "REPLY"
+    elif query == "RETURN":
+        response_text = "分かりました。他の問い合わせはございますか？"
+        state = "REPLY"
     else:
         url = 'https://chatbot-kokoro.azurewebsites.net/qnamaker/knowledgebases/f2a8edcd-2631-497b-98e4-918663e299d0/generateAnswer'
         
@@ -126,8 +134,10 @@ def ask():
             suffix = "スケジュールを確認しますか？"
 
         header = {'content-type': 'application/json', 'authorization': 'EndpointKey 30168be7-2ad2-4346-af8c-83fcc05069eb'}
-        response = requests.post(url, data=data.encode("utf-8"), headers= header)       
+        response = requests.post(url, data=data.encode("utf-8"), headers= header)   
         response_text = json.loads(response.text)["answers"][0]["answer"]
+        score = float(json.loads(response.text)["answers"][0]["score"])
+        print(score)
         
         if "￥" in response_text:
             resp_raw = response_text.split("￥")
