@@ -8,10 +8,9 @@ import logging
 from logging import Formatter, FileHandler
 from forms import *
 import os
-import requests, json
+import requests, json, uuid
 from werkzeug.exceptions import BadRequest
 from flask_cors import CORS
-
 
 #----------------------------------------------------------------------------#
 # App Config.
@@ -74,6 +73,57 @@ def register():
 def forgot():
     form = ForgotForm(request.form)
     return render_template('forms/forgot.html', form=form)
+
+@app.route("/translate", methods=["POST"])
+def translate():
+    #check whether user sends form or json data
+    try:
+        req_data = request.get_json()
+        from_lang = req_data['from']
+        to_lang = req_data['to']
+        text = req_data['text']
+    except (TypeError, BadRequest, KeyError):
+        from_lang = request.form['from']
+        to_lang = request.form['to']
+        text = request.form['text']
+
+    # Add your subscription key and endpoint
+    subscription_key = "b182a8845e0e4835916019c570c7c3d2"
+    endpoint = "https://api.cognitive.microsofttranslator.com"
+
+    # Add your location, also known as region. The default is global.
+    # This is required if using a Cognitive Services resource.
+    location = "southeastasia"
+
+    path = '/translate'
+    constructed_url = endpoint + path
+
+    params = {
+        'api-version': '3.0',
+        'from': from_lang,
+        'to': [to_lang]
+    }
+    constructed_url = endpoint + path
+
+    headers = {
+        'Ocp-Apim-Subscription-Key': subscription_key,
+        'Ocp-Apim-Subscription-Region': location,
+        'Content-type': 'application/json',
+        'X-ClientTraceId': str(uuid.uuid4())
+    }
+
+    # You can pass more than one object in body.
+    body = [{
+        'text': text
+    }]
+
+    req_translate = requests.post(constructed_url, params=params, headers=headers, json=body)
+    response = req_translate.json()
+    
+    payload = json.dumps({
+        'result': response[0]["translations"][0]["text"]
+    }, ensure_ascii=False)
+    return payload
 
 @app.route("/ask", methods=["POST"])
 def ask():
