@@ -97,7 +97,7 @@ def ask():
             query = "THANKS"
             break
 
-    for return_utterance in ["ないです", "ないんです",　"ありません", "大丈夫"]:
+    for return_utterance in ["ないです", "ないんです", "ありません", "大丈夫"]:
         if return_utterance in query:
             query = "RETURN"
             break
@@ -138,7 +138,7 @@ def ask():
         response_text = json.loads(response.text)["answers"][0]["answer"]
         score = float(json.loads(response.text)["answers"][0]["score"])
         print(score)
-        
+
         if "￥" in response_text:
             resp_raw = response_text.split("￥")
             response_text = resp_raw[0] + suffix
