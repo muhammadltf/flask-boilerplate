@@ -137,7 +137,7 @@ def ask():
         query = request.form['query']
         command = request.form['command']
 
-    for end_utterance in ["以上", "終", "それだけ"]:
+    for end_utterance in ["以上", "終", "それだけ", "それはすべて"]:
         if end_utterance in query:
             query = "END"
             break
