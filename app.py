@@ -137,7 +137,7 @@ def ask():
         query = request.form['query']
         command = request.form['command']
 
-    for end_utterance in ["以上", "終わり"]:
+    for end_utterance in ["以上", "終", "それだけ"]:
         if end_utterance in query:
             query = "END"
             break
@@ -188,9 +188,10 @@ def ask():
         header = {'content-type': 'application/json', 'authorization': 'EndpointKey 30168be7-2ad2-4346-af8c-83fcc05069eb'}
         response = requests.post(url, data=data.encode("utf-8"), headers= header)   
         response_text = json.loads(response.text)["answers"][0]["answer"]
-        score = float(json.loads(response.text)["answers"][0]["score"])
+        # score = float(json.loads(response.text)["answers"][0]["score"])
         
-        if score < 60 or "KB" in response_text:
+        # if score < 60 or "KB" in response_text:
+        if "KB" in response_text:
             if command == "default":
                 response_text = "申し訳ありません。私の勉強が足りないようです。私にはわかりません。"
             elif command == "naisen":
